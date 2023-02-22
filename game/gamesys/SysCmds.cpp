@@ -3016,6 +3016,81 @@ void Cmd_TestClientModel_f( const idCmdArgs& args ) {
 
 // RAVEN END
 
+//---------------------
+// CUSTOM COMMANDS (MATTHEW LIDONNI)
+//---------------------
+// This is bound to DEL currently
+void Cmd_testCommand_ML_f(const idCmdArgs& args) {
+	idPlayer* player = gameLocal.GetLocalPlayer();
+	// player->inventory.rgGiveItem("fungus");
+	
+}
+
+void Cmd_assignclass_f(const idCmdArgs& args) {
+	if (args.Argc() <= 1) {
+		// Checks if an argument was given after the command
+		gameLocal.Printf("usage: assignclass <class>\n");
+		gameLocal.Printf("\ttry 'commando', 'huntress', 'railgunner', 'mercenary', 'mult'\n");
+		return;
+	}
+	idPlayer* player = gameLocal.GetLocalPlayer();
+
+
+	if (!idStr::Icmp(args.Argv(1), "commando")) {
+		player->m_SetPlayerClass(1);
+	}
+	else if (!idStr::Icmp(args.Argv(1), "huntress")) {
+		player->m_SetPlayerClass(2);
+	}
+	else if (!idStr::Icmp(args.Argv(1), "railgunner")) {
+		player->m_SetPlayerClass(3);
+	}
+	else if (!idStr::Icmp(args.Argv(1), "mercenary")) {
+		player->m_SetPlayerClass(4);
+	}
+	else if (!idStr::Icmp(args.Argv(1), "mult")) {
+		player->m_SetPlayerClass(5);
+	}
+	else {
+		gameLocal.Printf("Not a valid class: '%s'\n", args.Argv(1));
+		gameLocal.Printf("\ttry 'commando', 'huntress', 'railgunner', 'mercenary', 'mult'\n");
+		return;
+	}
+
+	player->m_givePlayerLoadout();
+}
+
+void Cmd_getplayerclass_f(const idCmdArgs& args) {
+	int playerclass = gameLocal.GetLocalPlayer()->m_GetPlayerClass();
+
+	if (playerclass == 0) {
+		gameLocal.Printf("There is no class assigned. Assign one with 'assignclass <class>'\n");
+	}
+	else if (playerclass == 1) {
+		gameLocal.Printf("Player Class: Commando\n");
+	}
+	else if (playerclass == 2) {
+		gameLocal.Printf("Player Class: Huntress\n");
+	}
+	else if (playerclass == 3) {
+		gameLocal.Printf("Player Class: Railgunner\n");
+	}
+	else if (playerclass == 4) {
+		gameLocal.Printf("Player Class: Mercenary\n");
+	}
+	else if (playerclass == 5) {
+		gameLocal.Printf("Player Class: Mul-t\n");
+	}
+	else {
+		gameLocal.Printf("Assigned an unknown class... not sure how.\n");
+	}
+}
+
+
+//---------------------
+// CUSTOM COMMANDS END
+//---------------------
+
 void Cmd_CheckSave_f( const idCmdArgs &args );
 
 void Cmd_ShuffleTeams_f( const idCmdArgs& args ) {
@@ -3232,6 +3307,13 @@ void idGameLocal::InitConsoleCommands( void ) {
 	cmdSystem->AddCommand( "buyMenu",				Cmd_ToggleBuyMenu_f,		CMD_FL_GAME,				"Toggle buy menu (if in a buy zone and the game type supports it)" );
 	cmdSystem->AddCommand( "buy",					Cmd_BuyItem_f,				CMD_FL_GAME,				"Buy an item (if in a buy zone and the game type supports it)" );
 // RITUAL END
+
+// CUSTOM COMMANDS (MATTHEW LIDONNI)
+	cmdSystem->AddCommand("testCommand_ml",         Cmd_testCommand_ML_f,       CMD_FL_GAME,                "My test command");
+	cmdSystem->AddCommand("assignclass",            Cmd_assignclass_f,          CMD_FL_GAME,                "Assigns a class to character, changing both inventory and stats.");
+	cmdSystem->AddCommand("get_playerclass",		Cmd_getplayerclass_f,       CMD_FL_GAME,                "Returns assigned player class.");
+
+// CUSTOM COMMANDS END
 
 }
 

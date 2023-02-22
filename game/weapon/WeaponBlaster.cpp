@@ -126,7 +126,7 @@ bool rvWeaponBlaster::UpdateAttack ( void ) {
 			idPlayer * player = gameLocal.GetLocalPlayer();
 			if( player )	{
 			
-				if( player->GuiActive())	{
+				if( player->GuiActive())	{	
 					//make sure the player isn't looking at a gui first
 					SetState ( "Lower", 0 );
 				} else {

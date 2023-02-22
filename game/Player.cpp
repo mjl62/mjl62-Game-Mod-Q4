@@ -55,7 +55,7 @@ const int LADDER_RUNG_DISTANCE = 32;
 const int HEALTH_PER_DOSE = 10;
 
 // time before a weapon dropped to the floor disappears
-const int WEAPON_DROP_TIME = 20 * 1000;
+const int WEAPON_DROP_TIME = 20; // was 20 * 1000
 
 // time before a next or prev weapon switch happens
 const int	WEAPON_SWITCH_DELAY		= 150;
@@ -234,6 +234,8 @@ void idInventory::Clear( void ) {
 	memset( ammoIndices, -1, sizeof( int ) * MAX_WEAPONS );
 	memset( startingAmmo, -1, sizeof( int ) * MAX_WEAPONS );
 	memset( ammoRegenTime, -1, sizeof( int ) * MAX_WEAPONS );
+
+
 }
 
 /*
@@ -1342,6 +1344,15 @@ idPlayer::idPlayer() {
 	teamAmmoRegenPending	= false;
 	teamDoubler			= NULL;		
 	teamDoublerPending		= false;
+
+	
+	// MODDED PLAYER INIT (MATTHEW LIDONNI)
+
+	// player class by default is 0, meaning none is selected
+	m_playerclass = 0;
+
+
+	// END MODDED PLAYER INIT
 }
 
 /*
@@ -1547,6 +1558,7 @@ void idPlayer::Init( void ) {
 	lightningNextTime		= 0;
 
 	modelName				= idStr();
+
 
 	// Remove any hearing loss that may be set up from the last map
 	soundSystem->FadeSoundClasses( SOUNDWORLD_GAME, 0, 0.0f, 0 );
@@ -5944,9 +5956,11 @@ void idPlayer::DropWeapon( void ) {
 
 	assert( !gameLocal.isClient );
 
-	if( !gameLocal.isMultiplayer ) {
-		return;
-	}
+
+	//TODO figure out dropping weapons in singleplayer, this was NOT commented out originally (MATTHEW LIDONNI) 
+	//if( !gameLocal.isMultiplayer ) { 
+	//	return;
+	//}
 
 // RITUAL BEGIN
 // squirrel: don't drop weapons in Buying modes unless "always drop" is on
@@ -8737,7 +8751,7 @@ idPlayer::AdjustSpeed
 */
 void idPlayer::AdjustSpeed( void ) {
 	float speed;
-
+	//TODO Matt its Matt, use this for item buffs for speed
 	if ( spectating ) {
 		speed = pm_spectatespeed.GetFloat();
 		bobFrac = 0.0f;
@@ -9397,7 +9411,8 @@ void idPlayer::Think( void ) {
 		usercmd.rightmove = 0;
 		usercmd.upmove = 0;
 	}
-	
+
+	// MATTHEW LIDONNI - HERE ZOOM ITS HERE TODO HERE
 	// zooming
 	bool zoom = (usercmd.buttons & BUTTON_ZOOM) && CanZoom();
 	if ( zoom != zoomed ) {
@@ -14078,3 +14093,72 @@ int idPlayer::CanSelectWeapon(const char* weaponName)
 }
 
 // RITUAL END
+
+// MODDED FUNCTIONS BELOW, THESE WILL SOMETIMES START WITH 'm_' or 'rg' (MATTHEW LIDONNI)
+// CONSIDER ADDING INITIAL CLASS DECL TO HEADER FILES
+
+void idPlayer::m_SetPlayerClass(int newPlayerClass) {
+	m_playerclass = newPlayerClass;
+}
+
+int idPlayer::m_GetPlayerClass() {
+	return m_playerclass;
+}
+
+void idPlayer::m_givePlayerLoadout() {
+	idPlayer* player = gameLocal.GetLocalPlayer();
+
+	// Drops all weapons and ammo before giving loadout
+	m_DropAllWeapons();
+
+	// 0 = none, 1 = commando, 2 = huntress, 3 = railgunner, 4 = mercenary, 5 = mul - t	
+	if (m_playerclass == 0) {
+		gameLocal.Printf("Cannot equip without a class selected!");
+		return;
+	}
+	else if (m_playerclass == 1) {
+		// Commando Loadout: Dual Blasters, instead of a charge shot it will have a more powerful instant shot on a cooldown. 
+		player->GiveItem("weapon_blaster");
+		return;
+	}
+	else if (m_playerclass == 2) {
+		// Huntress Loadout: Bow (Machine Gun), consider changing to aimless firing. Boomerang thing if it can be done.
+		player->GiveItem("weapon_machinegun");
+		return;
+	}
+	else if (m_playerclass == 3) {
+		// Railgunner Loadout: Railgun, singlefire, scoping in charges up. Mines, possibly.
+		player->GiveItem("weapon_railgun");
+		return;
+	}
+	else if (m_playerclass == 4) {
+		// Mercenary Loadout: Katana (Gauntlet), holding down fire continually swings. Secondary swing puts vuln debuff on enemies. 
+		player->GiveItem("weapon_gauntlet");
+		return;
+	}
+	else if (m_playerclass == 5) {
+		player->GiveItem("weapon_nailgun");
+		return;
+	}
+	else {
+		gameLocal.Printf("Uhh wtf how you get that?");
+	}
+	player->GiveItem("ammorefill");
+}
+
+void idPlayer::m_DropAllWeapons() {
+	// Drops all weapons
+	idDict a;
+	inventory.Drop(a, "weapon_blaster", 0);
+	inventory.Drop(a, "weapon_machinegun", 1);
+	inventory.Drop(a, "weapon_gauntlet", 2);
+	inventory.Drop(a, "weapon_hyperblaster", 3);
+	inventory.Drop(a, "weapon_grenadelauncher", 4);
+	inventory.Drop(a, "weapon_nailgun", 5);
+	inventory.Drop(a, "weapon_rocketlauncher", 6);
+	inventory.Drop(a, "weapon_railgun", 7);
+	inventory.Drop(a, "weapon_lightninggun", 8);
+	inventory.Drop(a, "weapon_napalmgun", 9);
+}
+
+

@@ -3,6 +3,7 @@
 //
 // MERGE_DATE 07/07/2004
 
+#include "../rgItem.h"
 #ifndef __GAME_PLAYER_H__
 #define __GAME_PLAYER_H__
 
@@ -216,7 +217,14 @@ public:
 	int						startingAmmo[ MAX_WEAPONS ];
 
  	int						lastGiveTime;
- 	
+
+	// MODDED INVENTORY ITEMS (MATTHEW LIDONNI)
+	
+
+	
+
+	//END MODDED INVENTORY ITEMS
+	 	
 	idList<idDict *>		items;
 	idStrList				pdas;
 	idStrList				pdaSecurity;
@@ -355,6 +363,31 @@ public:
 	int						nextAmmoRegenPulse[ MAX_AMMO ];	// time when ammo will regenerate
 	int						nextArmorPulse;		// time when armor will tick down
 	bool					hiddenWeapon;		// if the weapon is hidden ( in noWeapons maps )
+
+
+
+	// MODDED DECL (MATTHEW LIDONNI)
+
+	// Integer value representing the players chosen class. 0 = none, 1 = commando, 2 = huntress, 3 = railgunner, 4 = mercenary, 5 = mul-t
+	int                     m_playerclass;
+	
+	// Sets m_playerclass to a variable
+	void                    m_SetPlayerClass(int newPlayerClass);
+	int                     m_GetPlayerClass();
+
+	// Gives player their classes loadout
+	void                    m_givePlayerLoadout();
+
+	// Drops all player weapons and removes the current weapon viewmodel
+	void					m_DropAllWeapons();
+
+
+
+
+
+	// MODDED DECL END
+
+
 
 	// mp stuff
 	int						spectator;
