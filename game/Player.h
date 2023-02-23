@@ -3,7 +3,6 @@
 //
 // MERGE_DATE 07/07/2004
 
-#include "../rgItem.h"
 #ifndef __GAME_PLAYER_H__
 #define __GAME_PLAYER_H__
 
@@ -219,6 +218,7 @@ public:
  	int						lastGiveTime;
 
 	// MODDED INVENTORY ITEMS (MATTHEW LIDONNI)
+	//idList<rgItem>			rgItems;
 	
 
 	

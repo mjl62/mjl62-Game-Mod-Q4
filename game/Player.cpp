@@ -18,6 +18,8 @@
 #include "Healing_Station.h"
 #include "ai/AI_Medic.h"
 
+#include "mod/rgGameHandler.h"
+
 // RAVEN BEGIN
 // nrausch: support for turning the weapon change ui on and off
 #ifdef _XENON
@@ -14144,6 +14146,7 @@ void idPlayer::m_givePlayerLoadout() {
 		gameLocal.Printf("Uhh wtf how you get that?");
 	}
 	player->GiveItem("ammorefill");
+	//rgGameHandler
 }
 
 void idPlayer::m_DropAllWeapons() {
