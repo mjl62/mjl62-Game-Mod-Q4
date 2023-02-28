@@ -208,6 +208,9 @@ void idInventory::Clear( void ) {
 	armor				= 0;
 	maxarmor			= 0;
 	secretAreasDiscovered = 0;
+	
+
+	// End custom clear
 
 	memset( ammo, 0, sizeof( ammo ) );
 
@@ -1561,7 +1564,6 @@ void idPlayer::Init( void ) {
 
 	modelName				= idStr();
 
-
 	// Remove any hearing loss that may be set up from the last map
 	soundSystem->FadeSoundClasses( SOUNDWORLD_GAME, 0, 0.0f, 0 );
 	
@@ -1780,6 +1782,9 @@ void idPlayer::Init( void ) {
 		teamDoublerPending = false;
 		teamDoubler = PlayEffect( "fx_doubler", renderEntity.origin, renderEntity.axis, true );
 	}
+
+	inventory.rgInit();
+
 }
 
 /*
@@ -14162,6 +14167,36 @@ void idPlayer::m_DropAllWeapons() {
 	inventory.Drop(a, "weapon_railgun", 7);
 	inventory.Drop(a, "weapon_lightninggun", 8);
 	inventory.Drop(a, "weapon_napalmgun", 9);
+}
+
+void idInventory::rgInit() {
+	if (rgItemInv.Size() == 0) {
+		rgInit();
+	}
+	rgItemInv.SetInt("fungus", 0);
+	rgItemInv.SetInt("behemoth", 0);
+	rgItemInv.SetInt("adrenaline", 0);
+	rgItemInv.SetInt("topaz", 0);
+	rgItemInv.SetInt("feather", 0);
+}
+
+void idInventory::rgAddItem(idStr rgname) {
+	if (rgItemInv.FindKey(rgname) != NULL) {
+		int current = rgItemInv.GetInt(rgname);
+		rgItemInv.SetInt(rgname, current + 1);
+	}
+	else {
+		gameLocal.Printf("Item not found.");
+	}
+}
+
+void idInventory::rgPrintItems() {
+	gameLocal.Printf("Item counts:\nFungus: %i\nBehemoth: %i\nAdrenaline: %i\nTopaz: %i\nFeather: %i\n", rgItemInv.GetInt("fungus"), rgItemInv.GetInt("behemoth"), rgItemInv.GetInt("adrenaline"), rgItemInv.GetInt("topaz"), rgItemInv.GetInt("feather"));
+}
+
+float idInventory::rgItemMod(idStr rgname) {
+	return rgItemInv.GetInt(rgname);
+	
 }
 
 

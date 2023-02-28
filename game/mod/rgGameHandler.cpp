@@ -1,15 +1,18 @@
+#include "../../idlib/precompiled.h"
+#pragma hdrstop
 
 #include "rgGameHandler.h"
-
-//void rgGameHandler::startRogue(startArgs) {
-
-//}
+#include "../Game_local.h"
 
 
-void StartRogue() {
+void rgGameHandler::Init() {
+	// Add items to item count
+	gameLocal.Printf("\n//////STARTING ROGUELIKE MOD///////\n");
 
 }
 
-void startRogue()
-{
+
+idStr rgGameHandler::GetItemCount() {
+	return "a";
 }
+

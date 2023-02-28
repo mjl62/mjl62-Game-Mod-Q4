@@ -13,6 +13,9 @@
 #include "Game_Log.h"
 // RAVEN END
 
+// MODDED INCLUDE
+#include "mod/rgGameHandler.h"
+
 //#define UI_DEBUG	1
 
 #ifdef GAME_DLL
@@ -1961,6 +1964,8 @@ void idGameLocal::InitFromNewMap( const char *mapName, idRenderWorld *renderWorl
 	mpGame.Reset();
 
 	mpGame.Precache();
+
+
 
 // RAVEN BEGIN
 // mwhitlock: Dynamic memory consolidation
@@ -8364,6 +8369,12 @@ void idGameLocal::Cmd_PrintSpawnIds_f( const idCmdArgs& args ) {
 		}
 	}
 }
+
+// CUSTOM GAMELOCAL (MATTHEW LIDONNI)
+
+
+
+// END CUSTOM GAMELOCAL
 
 /*
 ===============

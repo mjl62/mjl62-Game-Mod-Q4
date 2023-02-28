@@ -37,6 +37,9 @@
     <Filter Include="Game\MP\Stats">
       <UniqueIdentifier>{d13d6105-9e50-4375-8728-f66d3da1fb82}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Roguelike">
+      <UniqueIdentifier>{76eda799-a77b-4b3c-b4c0-42f231b4873f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game\Actor.cpp">
@@ -516,6 +519,9 @@
     <ClCompile Include="game\mp\stats\StatWindow.cpp">
       <Filter>Game\MP\Stats</Filter>
     </ClCompile>
+    <ClCompile Include="game\mod\rgGameHandler.cpp">
+      <Filter>Game\Roguelike</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game\Actor.h">
@@ -829,6 +835,9 @@
     </ClInclude>
     <ClInclude Include="game\mp\stats\StatWindow.h">
       <Filter>Game\MP\Stats</Filter>
+    </ClInclude>
+    <ClInclude Include="game\mod\rgGameHandler.h">
+      <Filter>Game\Roguelike</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

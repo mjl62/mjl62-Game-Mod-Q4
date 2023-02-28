@@ -217,13 +217,18 @@ public:
 
  	int						lastGiveTime;
 
-	// MODDED INVENTORY ITEMS (MATTHEW LIDONNI)
-	//idList<rgItem>			rgItems;
+	// MODDED INVENTORY (MATTHEW LIDONNI)
+	idDict rgItemInv;
+	void rgAddItem(idStr);
+	void rgInit();
+	void rgPrintItems();
+
+	float rgItemMod(idStr);
 	
 
 	
 
-	//END MODDED INVENTORY ITEMS
+	//END MODDED INVENTORY
 	 	
 	idList<idDict *>		items;
 	idStrList				pdas;
@@ -287,6 +292,9 @@ public:
 		EVENT_EMOTE,
  		EVENT_MAXEVENTS
  	};
+
+	
+
 
 	friend class idThread;
 
@@ -380,8 +388,6 @@ public:
 
 	// Drops all player weapons and removes the current weapon viewmodel
 	void					m_DropAllWeapons();
-
-
 
 
 

@@ -30,6 +30,7 @@
 #else
 #include "NoGameTypeInfo.h"
 #endif
+#include "../mod/rgGameHandler.h"
 
 /*
 ==================
@@ -3022,8 +3023,9 @@ void Cmd_TestClientModel_f( const idCmdArgs& args ) {
 // This is bound to DEL currently
 void Cmd_testCommand_ML_f(const idCmdArgs& args) {
 	idPlayer* player = gameLocal.GetLocalPlayer();
-	// player->inventory.rgGiveItem("fungus");
-	
+	player->inventory.rgAddItem("adrenaline");
+	player->inventory.rgPrintItems();
+
 }
 
 void Cmd_assignclass_f(const idCmdArgs& args) {
@@ -3034,7 +3036,6 @@ void Cmd_assignclass_f(const idCmdArgs& args) {
 		return;
 	}
 	idPlayer* player = gameLocal.GetLocalPlayer();
-
 
 	if (!idStr::Icmp(args.Argv(1), "commando")) {
 		player->m_SetPlayerClass(1);
