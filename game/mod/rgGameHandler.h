@@ -15,6 +15,8 @@ public:
 
 	idStr GetItemCount();
 
+	void StartSpawn();
+
 	void Init();
 	
 };
