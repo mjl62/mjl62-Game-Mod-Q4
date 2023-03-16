@@ -3025,6 +3025,7 @@ void Cmd_testCommand_ML_f(const idCmdArgs& args) {
 	idPlayer* player = gameLocal.GetLocalPlayer();
 	player->inventory.rgAddItem("adrenaline");
 	player->inventory.rgPrintItems();
+	rgGameHandler().StartSpawn();
 
 }
 

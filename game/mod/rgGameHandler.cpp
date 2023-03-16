@@ -16,3 +16,7 @@ idStr rgGameHandler::GetItemCount() {
 	return "a";
 }
 
+void rgGameHandler::StartSpawn() {
+
+}
+
