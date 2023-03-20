@@ -49,7 +49,23 @@ rvMonsterScientist::OnDeath
 ================
 */
 void rvMonsterScientist::OnDeath ( void ) {
+	// rgPoints Matthew LiDonni
+	idPlayer* player = gameLocal.GetLocalPlayer();
+	player->inventory.rgAddPoints(50);
+	if (player->inventory.armor <= player->inventory.maxarmor) {
+		player->inventory.armor += player->inventory.rgItemInv.GetInt("topaz");
+		player->UpdateHud();
+	}
+	if (player->health <= player->inventory.maxHealth) {
+		player->health += player->inventory.rgItemInv.GetInt("fungus");
+		player->UpdateHud();
+	}
 	StopEffect ( "fx_fly" );
+	
+	int roll = gameLocal.random.RandomInt(99);
+	if (roll >= 29) {
+		player->inventory.rgAddRandomItem();
+	}
 	
 	idAI::OnDeath ( );
 }

@@ -3,6 +3,7 @@
 #pragma hdrstop
 
 #include "../Game_local.h"
+#include "../mod/rgGameHandler.h"
 // RAVEN BEGIN
 #include "../ai/AI.h"
 #if !defined(__GAME_PROJECTILE_H__)
@@ -30,7 +31,7 @@
 #else
 #include "NoGameTypeInfo.h"
 #endif
-#include "../mod/rgGameHandler.h"
+
 
 /*
 ==================
@@ -3023,9 +3024,8 @@ void Cmd_TestClientModel_f( const idCmdArgs& args ) {
 // This is bound to DEL currently
 void Cmd_testCommand_ML_f(const idCmdArgs& args) {
 	idPlayer* player = gameLocal.GetLocalPlayer();
-	player->inventory.rgAddItem("adrenaline");
-	player->inventory.rgPrintItems();
-	rgGameHandler().StartSpawn();
+	rgGameHandler rg;
+	rg.StartSpawn(30);
 }
 
 void Cmd_assignclass_f(const idCmdArgs& args) {
@@ -3036,6 +3036,11 @@ void Cmd_assignclass_f(const idCmdArgs& args) {
 		return;
 	}
 	idPlayer* player = gameLocal.GetLocalPlayer();
+	
+	if (player->m_GetPlayerClass() != 0) {
+		gameLocal.Printf("Class already assigned: %i", player->m_GetPlayerClass());
+		return;
+	}
 
 	if (!idStr::Icmp(args.Argv(1), "commando")) {
 		player->m_SetPlayerClass(1);
@@ -3059,6 +3064,11 @@ void Cmd_assignclass_f(const idCmdArgs& args) {
 	}
 
 	player->m_givePlayerLoadout();
+	player->hud->HandleNamedEvent("hideClassSelect");
+
+	player->inventory.rhandler.StartSpawn(20);
+
+	player->UpdateHud();
 }
 
 void Cmd_getplayerclass_f(const idCmdArgs& args) {
@@ -3085,6 +3095,50 @@ void Cmd_getplayerclass_f(const idCmdArgs& args) {
 	else {
 		gameLocal.Printf("Assigned an unknown class... not sure how.\n");
 	}
+}
+
+void Cmd_showClassMenu_f(const idCmdArgs& args) {
+	gameLocal.Cmd_ToggleClassMenu_f();
+}
+
+
+void Cmd_giveRGItem_f(const idCmdArgs& args) {
+	if (args.Argc() <= 1) {
+		// Checks if an argument was given after the command
+		gameLocal.Printf("usage: givergitem <itemname>\n");
+		gameLocal.Printf("\ttry 'fungus', 'item2', 'adrenaline', 'topaz', 'feather'\n");
+		return;
+	}
+	idPlayer* player = gameLocal.GetLocalPlayer();
+
+	if (!idStr::Icmp(args.Argv(1), "fungus")) {
+		player->inventory.rgAddItem("fungus");
+	}
+	else if (!idStr::Icmp(args.Argv(1), "item2")) {
+		player->inventory.rgAddItem("behemoth");
+	}
+	else if (!idStr::Icmp(args.Argv(1), "adrenaline")) {
+		player->inventory.rgAddItem("adrenaline");
+	}
+	else if (!idStr::Icmp(args.Argv(1), "topaz")) {
+		player->inventory.rgAddItem("topaz");
+	}
+	else if (!idStr::Icmp(args.Argv(1), "feather")) {
+		player->inventory.rgAddItem("feather");
+	}
+	else {
+		// Fuck it let that function handle it, i already set it up and i dont wanna delete all this code
+		player->inventory.rgAddItem("erm");
+	}
+	
+	// print out item counts
+	player->inventory.rgPrintItems();
+
+}
+
+void Cmd_getRGPoints_f(const idCmdArgs& args) {
+	idPlayer* player = gameLocal.GetLocalPlayer();
+	gameLocal.Printf("\n%i points", player->inventory.rgGetPoints());
 }
 
 
@@ -3313,6 +3367,9 @@ void idGameLocal::InitConsoleCommands( void ) {
 	cmdSystem->AddCommand("testCommand_ml",         Cmd_testCommand_ML_f,       CMD_FL_GAME,                "My test command");
 	cmdSystem->AddCommand("assignclass",            Cmd_assignclass_f,          CMD_FL_GAME,                "Assigns a class to character, changing both inventory and stats.");
 	cmdSystem->AddCommand("get_playerclass",		Cmd_getplayerclass_f,       CMD_FL_GAME,                "Returns assigned player class.");
+	cmdSystem->AddCommand("showClassMenu",          Cmd_showClassMenu_f,        CMD_FL_GAME,                "Shows the class selection menu");
+	cmdSystem->AddCommand("givergitem",				Cmd_giveRGItem_f,			CMD_FL_GAME,				"Gives the player an item from the roguelike mod.");
+	cmdSystem->AddCommand("rgpoints",				Cmd_getRGPoints_f,			CMD_FL_GAME,				"Prints out the players current points.");
 
 // CUSTOM COMMANDS END
 

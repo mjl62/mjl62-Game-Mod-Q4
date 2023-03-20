@@ -1099,6 +1099,11 @@ idPlayer::idPlayer() {
 	deltaViewAngles			= ang_zero;
 	cmdAngles				= ang_zero;
 
+	// MODDED DECL (MATTHEW LIDONNI)
+	classSpeed				= 0;
+
+	// END MODDED DECL
+
 	demoViewAngleTime		= 0;
 	demoViewAngles			= ang_zero;
 
@@ -1784,7 +1789,7 @@ void idPlayer::Init( void ) {
 	}
 
 	inventory.rgInit();
-
+	inventory.rhandler;
 }
 
 /*
@@ -5964,11 +5969,6 @@ void idPlayer::DropWeapon( void ) {
 	assert( !gameLocal.isClient );
 
 
-	//TODO figure out dropping weapons in singleplayer, this was NOT commented out originally (MATTHEW LIDONNI) 
-	//if( !gameLocal.isMultiplayer ) { 
-	//	return;
-	//}
-
 // RITUAL BEGIN
 // squirrel: don't drop weapons in Buying modes unless "always drop" is on
 	if( gameLocal.mpGame.IsBuyingAllowedInTheCurrentGameMode() && !gameLocal.serverInfo.GetBool( "si_dropWeaponsInBuyingModes" ) ) {
@@ -7561,7 +7561,8 @@ void idPlayer::CrashLand( const idVec3 &oldOrigin, const idVec3 &oldVelocity ) {
 			return;
 		}
 	}
-	
+
+	delta /= (inventory.rgItemInv.GetInt("feather") + 1);
 
 	// ddynerman: moved height delta selection to player def
 	if ( delta > fatalFallDelta && fatalFallDelta > 0.0f ) {
@@ -8773,7 +8774,7 @@ void idPlayer::AdjustSpeed( void ) {
 		bobFrac = 0.0f;
 	}
 
-	speed *= PowerUpModifier(PMOD_SPEED);
+	speed += classSpeed;
 
 	if ( influenceActive == INFLUENCE_LEVEL3 ) {
 		speed *= 0.33f;
@@ -9201,6 +9202,14 @@ void idPlayer::UpdateHud( void ) {
  	} else {
  		hud->SetStateString( "hudLag", "0" );
  	}
+
+	hud->SetStateString("funguscount", va("Bison Steak: %i", (inventory.rgItemInv.GetInt("fungus"))));
+	hud->SetStateString("item2count", va("AP Rounds: %i", (inventory.rgItemInv.GetInt("behemoth"))));
+	hud->SetStateString("adrenalinecount", va("Soldiers Syringe: %i", (inventory.rgItemInv.GetInt("adrenaline"))));
+	hud->SetStateString("topazcount", va("Topaz Brooch: %i", (inventory.rgItemInv.GetInt("topaz"))));
+	hud->SetStateString("feathercount", va("Spring Boots: %i", (inventory.rgItemInv.GetInt("feather"))));
+
+	hud->SetStateString("pointcount", va("Score: %i", (inventory.rgGetPoints())));
 }
 
 /*
@@ -14131,6 +14140,9 @@ void idPlayer::m_givePlayerLoadout() {
 	else if (m_playerclass == 2) {
 		// Huntress Loadout: Bow (Machine Gun), consider changing to aimless firing. Boomerang thing if it can be done.
 		player->GiveItem("weapon_machinegun");
+		player->inventory.maxHealth = player->inventory.maxHealth * .8;
+		player->classSpeed = 30;
+		player->inventory.maxarmor -= 15;
 		return;
 	}
 	else if (m_playerclass == 3) {
@@ -14141,16 +14153,23 @@ void idPlayer::m_givePlayerLoadout() {
 	else if (m_playerclass == 4) {
 		// Mercenary Loadout: Katana (Gauntlet), holding down fire continually swings. Secondary swing puts vuln debuff on enemies. 
 		player->GiveItem("weapon_gauntlet");
+		player->classSpeed = 40;
+		player->inventory.maxarmor += 15;
 		return;
 	}
 	else if (m_playerclass == 5) {
 		player->GiveItem("weapon_nailgun");
+		player->inventory.maxHealth = player->inventory.maxHealth * 1.5;
+		player->classSpeed = -20;
+		player->inventory.maxarmor += 30;
 		return;
 	}
 	else {
 		gameLocal.Printf("Uhh wtf how you get that?");
 	}
+	player->health = player->inventory.maxHealth;
 	player->GiveItem("ammorefill");
+	player->UpdateHud();
 	//rgGameHandler
 }
 
@@ -14170,6 +14189,7 @@ void idPlayer::m_DropAllWeapons() {
 }
 
 void idInventory::rgInit() {
+	rgPoints = 0;
 	if (rgItemInv.Size() == 0) {
 		rgInit();
 	}
@@ -14190,8 +14210,40 @@ void idInventory::rgAddItem(idStr rgname) {
 	}
 }
 
+void idInventory::rgAddRandomItem() {
+	int roll = gameLocal.random.RandomInt(4);
+	if (roll == 0) {
+		rgAddItem("fungus");
+	}
+	else if (roll == 1) {
+		rgAddItem("behemoth");
+	}
+	else if (roll == 2) {
+		rgAddItem("adrenaline");
+	}
+	else if (roll == 3) {
+		rgAddItem("topaz");
+	}
+	else {
+		rgAddItem("feather");
+	}
+}
+
+void idInventory::rgAddPoints(int points) {
+	rgPoints += points;
+	
+	// Check if we should start the next wave
+	idPlayer* player = gameLocal.GetLocalPlayer();
+	player->inventory.rhandler.checkNextWaveReq();
+}
+
+int idInventory::rgGetPoints() {
+	return rgPoints;
+}
+
+
 void idInventory::rgPrintItems() {
-	gameLocal.Printf("Item counts:\nFungus: %i\nBehemoth: %i\nAdrenaline: %i\nTopaz: %i\nFeather: %i\n", rgItemInv.GetInt("fungus"), rgItemInv.GetInt("behemoth"), rgItemInv.GetInt("adrenaline"), rgItemInv.GetInt("topaz"), rgItemInv.GetInt("feather"));
+	gameLocal.Printf("\nItem counts:\nFungus: %i\nBehemoth: %i\nAdrenaline: %i\nTopaz: %i\nFeather: %i\n", rgItemInv.GetInt("fungus"), rgItemInv.GetInt("behemoth"), rgItemInv.GetInt("adrenaline"), rgItemInv.GetInt("topaz"), rgItemInv.GetInt("feather"));
 }
 
 float idInventory::rgItemMod(idStr rgname) {

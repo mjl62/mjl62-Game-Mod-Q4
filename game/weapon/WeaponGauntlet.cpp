@@ -285,7 +285,7 @@ void rvWeaponGauntlet::Attack ( void ) {
 			if ( ent->fl.takedamage ) {
 				float dmgScale = 1.0f;
 				dmgScale *= owner->PowerUpModifier( PMOD_MELEE_DAMAGE );
-				ent->Damage ( owner, owner, playerViewAxis[0], spawnArgs.GetString ( "def_damage" ), dmgScale, 0 );
+				ent->Damage ( owner, owner, playerViewAxis[0], spawnArgs.GetString ( "def_damage" ), (dmgScale + gameLocal.GetLocalPlayer()->inventory.rgItemInv.GetInt("behemoth") * 4), 0 );
 				StartSound( "snd_hit", SND_CHANNEL_ANY, 0, false, NULL );
 				if ( ent->spawnArgs.GetBool( "bleed" ) ) {
 					PlayLoopSound( LOOP_FLESH );
@@ -298,7 +298,7 @@ void rvWeaponGauntlet::Attack ( void ) {
 		} else {
 			PlayLoopSound( LOOP_NONE );
 		}
-		nextAttackTime = gameLocal.time + fireRate;
+		nextAttackTime = gameLocal.time + (fireRate / (1 + owner->inventory.rgItemMod("adrenaline")) * 0.95);
 	}
 }
 

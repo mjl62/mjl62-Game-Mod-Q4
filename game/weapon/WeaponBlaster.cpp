@@ -106,7 +106,7 @@ bool rvWeaponBlaster::UpdateAttack ( void ) {
 	if ( wsfl.attack && gameLocal.time >= nextAttackTime ) {
 		// Save the time which the fire button was pressed
 		if ( fireHeldTime == 0 ) {		
-			nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier ( PMOD_FIRERATE ));
+			nextAttackTime = gameLocal.time + (fireRate / (1 + owner->inventory.rgItemMod("adrenaline")) * 0.95);
 			fireHeldTime   = gameLocal.time;
 			viewModel->SetShaderParm ( BLASTER_SPARM_CHARGEGLOW, chargeGlow[0] );
 		}
@@ -427,11 +427,11 @@ stateResult_t rvWeaponBlaster::State_Fire ( const stateParms_t& parms ) {
 
 	
 			if ( gameLocal.time - fireHeldTime > chargeTime ) {	
-				Attack ( true, 1, spread, 0, 1.0f );
+				Attack ( true, 1, spread, 0, (1.0f + gameLocal.GetLocalPlayer()->inventory.rgItemInv.GetInt("behemoth")));
 				PlayEffect ( "fx_chargedflash", barrelJointView, false );
 				PlayAnim( ANIMCHANNEL_ALL, "chargedfire", parms.blendFrames );
 			} else {
-				Attack ( false, 1, spread, 0, 1.0f );
+				Attack ( false, 1, spread, 0, (1.0f + gameLocal.GetLocalPlayer()->inventory.rgItemInv.GetInt("behemoth") * 5));
 				PlayEffect ( "fx_normalflash", barrelJointView, false );
 				PlayAnim( ANIMCHANNEL_ALL, "fire", parms.blendFrames );
 			}

@@ -657,7 +657,8 @@ stateResult_t rvWeaponNailgun::State_Fire( const stateParms_t& parms ) {
 			return SRESULT_STAGE ( STAGE_FIRE );
 			
 		case STAGE_FIRE:
-			if ( !wsfl.attack || wsfl.reload || wsfl.lowerWeapon || AmmoInClip ( ) <= 0 ) {
+			//if (!wsfl.attack || wsfl.reload || wsfl.lowerWeapon || AmmoInClip() <= 0) {
+			if ( !wsfl.attack || wsfl.reload || wsfl.lowerWeapon) {
 				return SRESULT_STAGE ( STAGE_DONE );
 			}
 			if ( mods & NAILGUN_MOD_ROF_AMMO ) {
@@ -667,11 +668,11 @@ stateResult_t rvWeaponNailgun::State_Fire( const stateParms_t& parms ) {
 			}
 
 			if ( wsfl.zoom ) {				
-				Attack ( true, 1, spread, 0.0f, 1.0f );
+				Attack ( true, 1, spread, 0.0f, (1.0f + gameLocal.GetLocalPlayer()->inventory.rgItemInv.GetInt("behemoth") * 3));
 				nextAttackTime = gameLocal.time + (altFireRate * owner->PowerUpModifier ( PMOD_FIRERATE ));
 			} else {
-				Attack ( false, 1, spread, 0.0f, 1.0f );
-				nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier ( PMOD_FIRERATE ));
+				Attack ( false, 1, spread, 0.0f, (1.0f + gameLocal.GetLocalPlayer()->inventory.rgItemInv.GetInt("behemoth") * 3));
+				nextAttackTime = gameLocal.time + (fireRate / (1 + owner->inventory.rgItemMod("adrenaline")) * 0.95);
 			}
 			
 			// Play the exhaust effects
@@ -684,7 +685,8 @@ stateResult_t rvWeaponNailgun::State_Fire( const stateParms_t& parms ) {
 			return SRESULT_STAGE ( STAGE_FIREWAIT );
 
 		case STAGE_FIREWAIT:
-			if ( !wsfl.attack || wsfl.reload || wsfl.lowerWeapon || AmmoInClip ( ) <= 0 ) {
+			//if ( !wsfl.attack || wsfl.reload || wsfl.lowerWeapon || AmmoInClip ( ) <= 0 ) {
+			if ( !wsfl.attack || wsfl.reload || wsfl.lowerWeapon) {
 				return SRESULT_STAGE ( STAGE_DONE );
 			}
 			if ( gameLocal.time >= nextAttackTime ) {

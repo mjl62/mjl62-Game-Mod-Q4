@@ -8372,6 +8372,10 @@ void idGameLocal::Cmd_PrintSpawnIds_f( const idCmdArgs& args ) {
 
 // CUSTOM GAMELOCAL (MATTHEW LIDONNI)
 
+void idGameLocal::Cmd_ToggleClassMenu_f() {
+	idPlayer* player = gameLocal.GetLocalPlayer();
+}
+
 
 
 // END CUSTOM GAMELOCAL

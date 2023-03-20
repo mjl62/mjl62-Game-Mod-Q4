@@ -195,6 +195,23 @@ rvMonsterGrunt::OnDeath
 ================
 */
 void rvMonsterGrunt::OnDeath ( void ) {
+	// rgPoints Matthew LiDonni
+	idPlayer* player = gameLocal.GetLocalPlayer();
+	player->inventory.rgAddPoints(100);
+	if (player->inventory.armor <= player->inventory.maxarmor) {
+		player->inventory.armor += player->inventory.rgItemInv.GetInt("topaz");
+		player->UpdateHud();
+	}
+	if (player->health <= player->inventory.maxHealth) {
+		player->health += player->inventory.rgItemInv.GetInt("fungus");
+		player->UpdateHud();
+	}
+	
+	int roll = gameLocal.random.RandomInt(99);
+	if (roll >= 74) {
+		player->inventory.rgAddRandomItem();
+	}
+
 	RageStop ( );
 	return idAI::OnDeath ( );
 }

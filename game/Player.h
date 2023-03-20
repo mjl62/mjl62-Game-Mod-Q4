@@ -6,6 +6,8 @@
 #ifndef __GAME_PLAYER_H__
 #define __GAME_PLAYER_H__
 
+#include "mod/rgGameHandler.h"
+
 /*
 ===============================================================================
 
@@ -220,8 +222,13 @@ public:
 	// MODDED INVENTORY (MATTHEW LIDONNI)
 	idDict rgItemInv;
 	void rgAddItem(idStr);
+	void rgAddRandomItem();
+	void rgAddPoints(int);
+	int rgGetPoints();
 	void rgInit();
 	void rgPrintItems();
+	int rgPoints;
+	rgGameHandler rhandler;
 
 	float rgItemMod(idStr);
 	
@@ -375,6 +382,9 @@ public:
 
 
 	// MODDED DECL (MATTHEW LIDONNI)
+	float					classSpeed;
+
+	// END MODDED DECL
 
 	// Integer value representing the players chosen class. 0 = none, 1 = commando, 2 = huntress, 3 = railgunner, 4 = mercenary, 5 = mul-t
 	int                     m_playerclass;

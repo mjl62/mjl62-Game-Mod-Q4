@@ -47,6 +47,9 @@ protected:
 	//stops all effects
 	void				StopAllEffects					( void );
 
+	// Matthew LiDonni
+	virtual void		OnDeath							( void );
+
 	//for the cannon fire
 	int					shots;
 
@@ -474,6 +477,25 @@ void rvMonsterBossMakron::StopAllBoltEffects ( void ) {
 
 }
 
+void rvMonsterBossMakron::OnDeath(void) {
+	// rgPoints Matthew LiDonni
+	idPlayer* player = gameLocal.GetLocalPlayer();
+	player->inventory.rgAddPoints(1000);
+	if (player->inventory.armor <= player->inventory.maxarmor) {
+		player->inventory.armor += player->inventory.rgItemInv.GetInt("topaz");
+		player->UpdateHud();
+	}
+	if (player->health <= player->inventory.maxHealth) {
+		player->health += player->inventory.rgItemInv.GetInt("fungus");
+		player->UpdateHud();
+	}
+	
+
+	player->inventory.rgAddRandomItem();
+
+}
+
+
 void rvMonsterBossMakron::InitSpawnArgsVariables ( void ) {
 	//slick!
 	jointLightningBolt = animator.GetJointHandle ( spawnArgs.GetString ( "joint_lightningBolt", "claw_muzzle" ) );
@@ -555,6 +577,8 @@ void rvMonsterBossMakron::Spawn ( void ) {
 
 	// pre-cache decls
 	gameLocal.FindEntityDefDict ( "monster_makron_legs" );
+
+	gameLocal.GetLocalPlayer()->StartBossBattle(this);
 }
 
 /*

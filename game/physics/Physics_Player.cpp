@@ -1293,7 +1293,7 @@ bool idPhysics_Player::CheckJump( void ) {
 	walking = false;
 	current.movementFlags |= PMF_JUMP_HELD | PMF_JUMPED;
 
-	addVelocity = 2.0f * maxJumpHeight * -gravityVector;
+	addVelocity = 2.0f * (maxJumpHeight + gameLocal.GetLocalPlayer()->inventory.rgItemInv.GetInt("feather") * 15) * -gravityVector;
 	addVelocity *= idMath::Sqrt( addVelocity.Normalize() );
 	current.velocity += addVelocity;
 

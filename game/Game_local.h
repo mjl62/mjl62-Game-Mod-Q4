@@ -748,6 +748,13 @@ public:
 	int						GetClientNumByName( const char *name ) const;
 
 	idPlayer *				GetLocalPlayer() const;
+
+// CUSTOM GAMELOCAL (MATTHEW LIDONNI)
+
+	void idGameLocal::Cmd_ToggleClassMenu_f();
+
+
+// END CUSTOM GAMELOCAL
 	
 // RAVEN BEGIN
 // jshepard: update player data after main menu close

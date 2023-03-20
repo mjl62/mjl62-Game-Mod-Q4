@@ -231,8 +231,8 @@ stateResult_t rvWeaponMachinegun::State_Fire ( const stateParms_t& parms ) {
 				Attack ( true, 1, spreadZoom, 0, 1.0f );
 				fireHeld = true;
 			} else {
-				nextAttackTime = gameLocal.time + (fireRate / (1 + owner->inventory.rgItemMod("adrenaline")) * 0.9);
-				Attack ( false, 1, spread, 0, 1.0f );
+				nextAttackTime = gameLocal.time + (fireRate / (1 + owner->inventory.rgItemMod("adrenaline")) * 0.95);
+				Attack ( false, 1, spread, 0, (1.0f + gameLocal.GetLocalPlayer()->inventory.rgItemInv.GetInt("behemoth") * 2));
 			}
 			PlayAnim ( ANIMCHANNEL_ALL, "fire", 0 );	
 			return SRESULT_STAGE ( STAGE_WAIT );

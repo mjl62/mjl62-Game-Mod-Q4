@@ -4,20 +4,27 @@
 #include "../../idlib/precompiled.h"
 
 class rgGameHandler {
-
+		
 public:
+	rgGameHandler();
 
 	// Variables
 	idDict items;
+	idThread* th_spawn;
+	idList<idVec3> spawnLocations;
 
+	int deadToNextWave;
+	int killedThisWave;
+	int waveNumber;
 	// Methods
-	void PickupItem(idStr);
 
-	idStr GetItemCount();
 
-	void StartSpawn();
+	void CheckBossReq();
+	void StartSpawn(int);
+	void checkNextWaveReq();
 
-	void Init();
+
+	int rgGameLoop(int);	
 	
 };
 
